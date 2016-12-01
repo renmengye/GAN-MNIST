@@ -34,13 +34,18 @@ with tf.Session() as sess:
   saver = tf.train.Saver(max_to_keep=10)
 
   discrim_vars = filter(lambda x: x.name.startswith("discrim"),
-      tf.trainable_variables())
-  gen_vars = filter(lambda x: x.name.startswith("gen"), tf.trainable_variables())
+                        tf.trainable_variables())
+  gen_vars = filter(lambda x: x.name.startswith("gen"),
+                    tf.trainable_variables())
   discrim_vars = [i for i in discrim_vars]
   gen_vars = [i for i in gen_vars]
 
-  train_op_discrim = tf.train.AdamOptimizer(learning_rate, beta1=0.5).minimize(d_cost_tf, var_list=discrim_vars)
-  train_op_gen = tf.train.AdamOptimizer(learning_rate, beta1=0.5).minimize(g_cost_tf, var_list=gen_vars)
+  train_op_discrim = tf.train.AdamOptimizer(
+      learning_rate, beta1=0.5).minimize(
+          d_cost_tf, var_list=discrim_vars)
+  train_op_gen = tf.train.AdamOptimizer(
+      learning_rate, beta1=0.5).minimize(
+          g_cost_tf, var_list=gen_vars)
   Z_tf_sample, Y_tf_sample, image_tf_sample = dcgan_model.samples_generator(
       batch_size=visualize_dim)
   sess.run(tf.initialize_all_variables())
@@ -64,13 +69,13 @@ with tf.Session() as sess:
 
       if np.mod(iterations, k) != 0:
         _, gen_loss_val = sess.run([train_op_gen, g_cost_tf],
-            feed_dict={Z_tf: Zs,
-              Y_tf: Ys})
+                                   feed_dict={Z_tf: Zs,
+                                              Y_tf: Ys})
         discrim_loss_val, p_real_val, p_gen_val = sess.run(
             [d_cost_tf, p_real, p_gen],
             feed_dict={Z_tf: Zs,
-              image_tf: Xs,
-              Y_tf: Ys})
+                       image_tf: Xs,
+                       Y_tf: Ys})
         print("=========== updating G ==========")
         print("iteration:", iterations)
         print("gen loss:", gen_loss_val)
@@ -80,13 +85,13 @@ with tf.Session() as sess:
         _, discrim_loss_val = sess.run(
             [train_op_discrim, d_cost_tf],
             feed_dict={Z_tf: Zs,
-              Y_tf: Ys,
-              image_tf: Xs})
+                       Y_tf: Ys,
+                       image_tf: Xs})
         gen_loss_val, p_real_val, p_gen_val = sess.run(
-        [g_cost_tf, p_real, p_gen],
-        feed_dict={Z_tf: Zs,
-          image_tf: Xs,
-          Y_tf: Ys})
+            [g_cost_tf, p_real, p_gen],
+            feed_dict={Z_tf: Zs,
+                       image_tf: Xs,
+                       Y_tf: Ys})
         print("=========== updating D ==========")
         print("iteration:", iterations)
         print("gen loss:", gen_loss_val)
@@ -99,8 +104,8 @@ with tf.Session() as sess:
         generated_samples = sess.run(
             image_tf_sample,
             feed_dict={Z_tf_sample: Z_np_sample,
-              Y_tf_sample: Y_np_sample})
-            generated_samples = (generated_samples + 1.) / 2.
+                       Y_tf_sample: Y_np_sample})
+        generated_samples = (generated_samples + 1.) / 2.
         save_visualization(
             generated_samples, (14, 14),
             save_path="./vis/sample_{:04d}.jpg".format(int(iterations / 200)))
