@@ -9,7 +9,7 @@ from collections import Counter
 import random
 from matplotlib import pyplot as plt
 
-data_dir = '/home/mren/code/unseg/data/mnist'
+data_dir = '../../unseg/data/mnist'
 
 
 def mnist():
