@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 import tensorflow as tf
-import ipdb
 
 def batchnormalize(X, eps=1e-8, g=None, b=None):
     if X.get_shape().ndims == 4:
